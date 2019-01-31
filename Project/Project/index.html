@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta httpequiv="ContentType" content="text/html; charset=utf8">
+		<meta name="viewport" content="width=devicewidth, minimumscale=1, maximumscale=1">
+		<title>Restaurant Info</title>
+
+		<!--JQUERY-->
+		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+
+		<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+		<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+
+		<!--GOOGLE SEARCH-->
+		<script src="_js/search.js"></script>
+
+		<!--GOOGLE MAPS-->
+		<script src="_js/map.js"></script>
+		<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDJy98EhmcEw05dyVzYx9u3On4aIJJj4_E&callback=initMap"></script>
+
+		<!--SELECT 2-->
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+
+
+		<!--CSS-->
+		<style type="text/css">
+			/*custom styles for jquery mobile*/
+			.controls {
+				text-align: center;
+			}
+
+			/*google map style/layout*/
+			#map {
+				height: 80%;
+				margin-left: 1em;
+				margin-right: 1em;
+				border: #00000
+			}
+
+			html, body {
+				height: 99%;
+				margin: 0;
+				padding: 0;
+			}
+
+			/*facebook pages*/
+			.fb-page {
+				margin-left: 1em;
+				margin-right: 2em;
+				margin-bottom:1em;
+			}
+
+			/*Sign In Form*/
+			#open {
+				margin: 0;
+				cursor: pointer;
+				padding-top: 0.7em;
+				padding-bottom: 0.7em;
+				width:100%;
+			}
+
+			#open:hover {
+				color: rgb(0,0,0);
+				background-color: rgb(172, 212, 249);
+			}
+
+			#login form {
+				padding: 10px 10px 10px 10px;
+				display: none;
+				background-color: rgb(172, 212, 249);
+				width:50%;
+				position: relative;
+				left:25%;
+			}
+			#login label {
+				display: inline-block;
+				width: 100px;
+				text-align: right;
+				margin: 0 15px 0 0;
+				color: rgb(255,255,255);
+			}
+			#login input {
+				font-size: 14px;
+			}
+			
+			#login{margin-top:5em;
+				   width:95%;
+			margin-right:2em;
+			}
+				   
+			#guest:hover {
+				color: rgb(0,0,0);
+				background-color: rgb(172, 212, 249);
+				}
+				
+			#guest{width:95%;
+			margin-right:2em;
+			}
+				   
+		</style>
+		
+		
+		
+		<!--LOGIN-->
+		<script>
+			$(document).ready(function() {
+				$('#open').click(function() {
+					$('#login form').slideToggle(300);
+					$(this).toggleClass('close');
+				});
+				// end click event
+
+				$('#button').click(function() {
+					alert("Welcome " + $('#username').val());
+					window.location.href = 'http://127.0.0.1:8020/Project/Project/index.html#menu';
+				});
+				//end click event
+			});
+			// end ready
+		</script> 
+		
+		
+		
+		<!--FACEBOOK SDK-->
+		<div id="fb-root"></div>
+		<script>
+			( function(d, s, id) {
+					var js,
+					    fjs = d.getElementsByTagName(s)[0];
+					if (d.getElementById(id))
+						return;
+					js = d.createElement(s);
+					js.id = id;
+					js.src = "//connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v2.8&appId=732138363623802";
+					fjs.parentNode.insertBefore(js, fjs);
+				}(document, 'script', 'facebook-jssdk'));
+		</script>
+
+	</head><!--end head-->
+
+
+
+	<body class="uimobileviewport">
+
+
+
+		<!--Start of login/home page-->
+		<div data-role="page" id="home" data-theme="a">
+			<div data-theme="b" data-role="header">
+				<h1>Restaurant Info</h1>
+			</div><!--header-->
+
+			<div data-role="content" class="login">
+
+				<ul data-role="listview" data-inset="true">
+					<div id="login">
+						<a data-transition="slide" data-role = "button" id="open">
+							Login
+						</a>
+						<form>
+							<p>
+								<label for="username">Username:</label>
+								<input type="text" name="username" id="username">
+							</p>
+							<p>
+								<label for="password">Password: </label>
+								<input type="text" name="password" id="password">
+							</p>
+							<p>
+								<input type="submit" name="button" id="button" href="#menu" value="Submit" >
+							</p>
+						</form>
+					</div>
+
+				</ul>
+				<br>
+				<br>
+				<ul data-role="listview" data-inset="true">
+					<li>
+						<a href="#menu" data-transition="slide" data-role = "button" style="text-align: center" id="guest">Guest</a>
+					</li>
+				</ul>
+			</div><!--End Content-->
+
+		</div><!--End home page -->
+
+
+
+
+		<!--Start of menu page-->
+		<div data-role="page" id="menu" data-theme="a">
+			<div data-theme="b" data-role="header">
+				<h1>Menu</h1>
+			</div><!--header-->
+
+			<div data-role="content">
+				<ul data-role="listview" data-inset="true">
+					<li>
+						<a href="#search" data-transition="slide">Custom Search</a><!-- use google custom search api-->
+					</li>
+					<li>
+						<a href="#location" data-transition="slide">Search Nearby</a><!--use google maps-->
+					</li>
+					<li>
+						<a href="#facebook" data-transition="slide">Facebook</a><!--use facebook api-->
+					</li>
+					<li>
+						<a href="#fourSquare" data-transition="slide">Four Square</a><!--use trip advisor api-->
+					</li>
+				</ul>
+			</div><!--/content-->
+
+			<div data-role="footer" data-id="myfooter" data-position="fixed">
+				<div class="controls" data-role="controlgroup" data-type="horizontal">
+					<a href="#home" data-role="button" data-icon="home">Log Out</a>
+					<a href="#menu" data-role="button" data-icon="bars">Main Menu</a>
+					<a href="#search" data-role="button" data-icon="search">Search</a>
+				</div>
+			</div>
+			<!--/footer-->
+		</div><!--/page-->
+
+
+
+
+
+		<!--Start of custom search page -->
+		<div data-role="page" id="search" data-theme="a">
+			<div data-theme="b" data-role="header">
+				<h1>Custom Search</h1>
+			</div><!--/header -->
+
+			<div data-role="content">
+				<h2>Search for Restaurants</h2>
+				<!--<p><gcse:search></gcse:search></p>-->
+
+				<div class="sidebar">
+					<gcse:searchbox enableAutoComplete="true"></gcse:searchbox>
+				</div>
+
+				<br>
+
+				<div class="main-content">
+					<gcse:searchresults></gcse:searchresults>
+				</div>
+
+				<p>
+					<a data-role="button"  data-rel="back" style="width:15%" href="#menu">Back</a>
+				</p>
+			</div><!--/content-->
+
+			<div data-role="footer" data-id="myfooter" data-position="fixed">
+				<div class="controls" data-role="controlgroup" data-type="horizontal">
+					<a href="#home" data-role="button" data-icon="home">Log Out</a>
+					<a href="#menu" data-role="button" data-icon="bars">Main Menu</a>
+					<a href="#search" data-role="button" data-icon="search">Search</a>
+				</div>
+			</div><!--/footer-->
+		</div><!--/page-->
+
+
+
+
+		<!--Start of search location page -->
+		<div data-role="page" id="location" data-theme="a">
+			<div data-theme="b" data-role="header">
+				<h1>Search Nearby</h1>
+			</div>
+
+			<div data-role="content" style="height:100%; width:98%; position:absolute;">
+				<div id="map"></div>
+				<p>
+					<a data-role="button"  data-rel="back" style="width:15%" href="#menu">Back</a>
+				</p>
+			</div><!--content-->
+
+			<div data-role="footer" data-id="myfooter" data-position="fixed">
+				<div class="controls" data-role="controlgroup" data-type="horizontal">
+					<a href="#home" data-role="button" data-icon="home">Log Out</a>
+					<a href="#menu" data-role="button" data-icon="bars">Main Menu</a>
+					<a href="#search" data-role="button" data-icon="search">Search</a>
+				</div>
+			</div><!--/footer -->
+		</div><!--/page -->
+
+
+
+
+		<!--Start of facebook page -->
+		<div data-role="page" id="facebook" data-theme="a">
+
+			<div data-role="header" data-theme="b">
+				<h1>Facebook</h1>
+			</div><!--/header -->
+
+			<div data-role="content" style="height:100%; width:98%; position:absolute;">
+
+				<h3>Popular Restaurants in Tralee</h3>
+
+				<div class="fb-page"
+				data-tabs="timeline,events,messages"
+				data-href="https://www.facebook.com/Cassidys-Restaurant-Tralee-187384791300570/"
+				data-width="380"
+				data-hide-cover="false"></div>
+
+				<div class="fb-page"
+				data-tabs="timeline,events,messages"
+				data-href="https://www.facebook.com/LanaTralee"
+				data-width="380"
+				data-hide-cover="false"></div>
+
+				<div class="fb-page"
+				data-tabs="timeline,events,messages"
+				data-href="https://www.facebook.com/tralee.ilpomodoro/"
+				data-width="380"
+				data-hide-cover="false"></div>
+				
+				<div class="fb-page"
+				data-tabs="timeline,events,messages"
+				data-href="https://www.facebook.com/quinlansfish/"
+				data-width="380"
+				data-hide-cover="false"></div>
+
+				<br>
+				<br>
+
+				<a data-role="button"  data-rel="back" style="width:15%" href="#menu">Back</a>
+
+			
+		</div><!--/content -->
+
+		<div data-role="footer" data-id="myfooter" data-position="fixed">
+			<div class="controls" data-role="controlgroup" data-type="horizontal">
+				<a href="#home" data-role="button" data-icon="home">Log Out</a>
+				<a href="#menu" data-role="button" data-icon="bars">Main Menu</a>
+				<a href="#search" data-role="button" data-icon="search">Search</a>
+			</div>
+		</div><!--/footer -->
+		</div><!--/page -->
+		
+		
+		
+
+		<!--Start of four square page -->
+		<div data-role="page" id="fourSquare" data-theme="a">
+
+			<div data-role="header" data-theme="b">
+				<h1>Four Square</h1>
+			</div><!--/header -->
+
+			<div data-role="content">
+				
+				<!--Start of JS-->
+				<script>
+					var url = 'https://api.foursquare.com/v2/venues/explore?near="Tralee"&oauth_token=QIKN10JEXZTJUARZKHIZUWHYIVT5EEJN54MLT0K1RCLJNRRT&v=20131016'
+
+					$(document).ready(function() {
+						$.ajax({
+							url : url,
+							success : function(data, status, XHR) {
+								//alert(data.response.groups[0].items[0].venue.name);
+								var arr = [data.response.groups[0].items];
+								var arrayOfNames;
+
+								arrayOfNames = [data.response.groups[0].items[0].venue.name, 
+								data.response.groups[0].items[1].venue.name, 
+								data.response.groups[0].items[3].venue.name, 
+								data.response.groups[0].items[4].venue.name, 
+								data.response.groups[0].items[6].venue.name,
+								data.response.groups[0].items[7].venue.name, 
+								data.response.groups[0].items[8].venue.name,
+								data.response.groups[0].items[10].venue.name,
+								data.response.groups[0].items[11].venue.name,
+								data.response.groups[0].items[12].venue.name, 
+								data.response.groups[0].items[15].venue.name, 
+								data.response.groups[0].items[16].venue.name, 
+								data.response.groups[0].items[17].venue.name, 
+								data.response.groups[0].items[18].venue.name, 
+								data.response.groups[0].items[20].venue.name, 
+								data.response.groups[0].items[22].venue.name, 
+								data.response.groups[0].items[23].venue.name, 
+								data.response.groups[0].items[24].venue.name, 
+								data.response.groups[0].items[25].venue.name,
+								data.response.groups[0].items[26].venue.name];
+
+								//add place names to drop down list
+								$(".js-example-data-array").select2({
+
+									data : arrayOfNames
+
+								});
+								
+								
+								
+								//display more information on select
+								$(".js-example-data-array").on("select2:select", function(e) {
+
+									if ($(".js-example-data-array :selected").text() == "The Roast House") {
+										$("#more").html("<p>Rating: " + data.response.groups[0].items[0].venue.rating + "</p>" +
+														"<p>Address: " + data.response.groups[0].items[0].venue.location.address + "</p>" +
+														"<p>Price: " + data.response.groups[0].items[0].venue.price.message + "</p>" +
+														"<p>Hours: " + data.response.groups[0].items[0].venue.hours.status + "</p>");
+									} 
+									else if ($(".js-example-data-array :selected").text() == "Baily's Corner") {
+										$("#more").html("<p>Rating: " + data.response.groups[0].items[1].venue.rating + "</p>" +
+														"<p>Address: " + data.response.groups[0].items[1].venue.location.address + "</p>" +
+														"<p>Price: " + data.response.groups[0].items[1].venue.price.message + "</p>" +
+														"<p>Hours: " + data.response.groups[0].items[1].venue.hours.status + "</p>");
+									} 
+									else if ($(".js-example-data-array :selected").text() == "Bella Bia") {
+										$("#more").html("<p>Rating: " + data.response.groups[0].items[3].venue.rating + "</p>" +
+														"<p>Address: " + data.response.groups[0].items[3].venue.location.address + "</p>" +
+														"<p>Price: " + data.response.groups[0].items[3].venue.price.message + "</p>");
+									}
+									else if ($(".js-example-data-array :selected").text() == "Ballyseede Castle Hotel") {
+										$("#more").html("<p>Rating: " + data.response.groups[0].items[4].venue.rating + "</p>" +
+														"<p>Address: " + data.response.groups[0].items[4].venue.location.address);
+									}
+									else if ($(".js-example-data-array :selected").text() == "Ballyseedy Garden Centre") {
+										$("#more").html("<p>Rating: " + data.response.groups[0].items[6].venue.rating + "</p>" +
+														"<p>Address: " + data.response.groups[0].items[6].venue.location.address + "</p>");
+									} 
+									else if ($(".js-example-data-array :selected").text() == "Ballygarry House Hotel & Spa") {
+										$("#more").html("<p>Rating: " + data.response.groups[0].items[7].venue.rating + "</p>" +
+														"<p>Address: " + data.response.groups[0].items[7].venue.location.address + "</p>");
+									}
+									else if ($(".js-example-data-array :selected").text() == "The Grand Hotel") {
+										$("#more").html("<p>Rating: " + data.response.groups[0].items[8].venue.rating + "</p>" +
+														"<p>Address: " + data.response.groups[0].items[8].venue.location.address + "</p>");
+									}
+									else if ($(".js-example-data-array :selected").text() == "Costa Coffee") {
+										$("#more").html("<p>Rating: " + data.response.groups[0].items[10].venue.rating + "</p>" +
+														"<p>Address: " + data.response.groups[0].items[10].venue.location.address + "</p>" +
+														"<p>Price: " + data.response.groups[0].items[10].venue.price.message + "</p>");
+									} 
+									else if ($(".js-example-data-array :selected").text() == "La Scala") {
+										$("#more").html("<p>Rating: " + data.response.groups[0].items[11].venue.rating + "</p>" +
+														"<p>Address: " + data.response.groups[0].items[11].venue.location.address + "</p>" +
+														"<p>Price: " + data.response.groups[0].items[11].venue.price.message + "</p>");
+									}
+									else if ($(".js-example-data-array :selected").text() == "Meadowlands Hotel") {
+										$("#more").html("<p>Rating: " + data.response.groups[0].items[12].venue.rating + "</p>" +
+														"<p>Address: " + data.response.groups[0].items[12].venue.location.address + "</p>");
+									}
+									else if ($(".js-example-data-array :selected").text() == "Quinlan's Fish") {
+										$("#more").html("<p>Rating: " + data.response.groups[0].items[15].venue.rating + "</p>" +
+														"<p>Address: " + data.response.groups[0].items[15].venue.location.address + "</p>" +
+														"<p>Price: " + data.response.groups[0].items[15].venue.price.message + "</p>");
+									} 
+									else if ($(".js-example-data-array :selected").text() == "The Daily Grind") {
+										$("#more").html("<p>Rating: " + data.response.groups[0].items[16].venue.rating + "</p>" +
+														"<p>Address: " + data.response.groups[0].items[16].venue.location.address + "</p>" +
+														"<p>Price: " + data.response.groups[0].items[16].venue.price.message + "</p>" +
+														"<p>Hours: " + data.response.groups[0].items[16].venue.hours.status + "</p>");
+									}
+									else if ($(".js-example-data-array :selected").text() == "The Abbey Inn") {
+										$("#more").html("<p>Rating: " + data.response.groups[0].items[17].venue.rating + "</p>" +
+														"Address: " + data.response.groups[0].items[17].venue.location.address + "</p>" +
+														"<p>Price: " + data.response.groups[0].items[17].venue.price.message + "</p>");
+									} 
+									else if ($(".js-example-data-array :selected").text() == "Mozarts") {
+										$("#more").html("Rating: " + data.response.groups[0].items[18].venue.rating + "</p>" +
+														"<p>Address: " + data.response.groups[0].items[18].venue.location.address + "</p>" +
+														"<p>Price: " + data.response.groups[0].items[18].venue.price.message + "</p>");
+									}
+									else if ($(".js-example-data-array :selected").text() == "Chopin's Cafe & Restaurant") {
+										$("#more").html("<p>Rating: " + data.response.groups[0].items[20].venue.rating + "</p>" +
+														"<p>Address: " + data.response.groups[0].items[20].venue.location.address + "</p>" +
+														"<p>Price: " + data.response.groups[0].items[20].venue.price.message + "</p>");
+									} 
+									else if ($(".js-example-data-array :selected").text() == "Manor West Retail Park") {
+										$("#more").html("<p>Rating: " + data.response.groups[0].items[22].venue.rating + "</p>" +
+														"<p>Address: " + data.response.groups[0].items[22].venue.location.address + "</p>" +
+														"<p>Hours: " + data.response.groups[0].items[22].venue.hours.status + "</p>");
+									}
+									else if ($(".js-example-data-array :selected").text() == "Turner's Lounge") {
+										$("#more").html("<p>Rating: " + data.response.groups[0].items[23].venue.rating + "</p>" +
+														"<p>Address: " + data.response.groups[0].items[23].venue.location.address + "</p>" +
+														"<p>Price: " + data.response.groups[0].items[23].venue.price.message + "</p>" +
+														"<p>Hours: " + data.response.groups[0].items[23].venue.hours.status + "</p>");
+									} 
+									else if ($(".js-example-data-array :selected").text() == "Brandon Hotel") {
+										$("#more").html("<p>Rating: " + data.response.groups[0].items[24].venue.rating + "</p>" +
+														"<p>Address: " + data.response.groups[0].items[24].venue.location.address + "</p>");
+									}
+									else if ($(".js-example-data-array :selected").text() == "The Square") {
+										$("#more").html("<p>Rating: " + data.response.groups[0].items[25].venue.rating + "</p>" +
+														"<p>Address: " + data.response.groups[0].items[25].venue.location.address + "</p>");
+									} 
+									else if ($(".js-example-data-array :selected").text() == "O'Donnells of Mounthawk") {
+										$("#more").html("<p>Rating: " + data.response.groups[0].items[26].venue.rating + "</p>" +
+														"<p>Address: " + data.response.groups[0].items[26].venue.location.address + "</p>" +
+														"<p>Price: " + data.response.groups[0].items[26].venue.price.message + "</p>");
+									}
+									else
+										$("#more").html("<p>No information provided</p>");
+								});
+								
+								//reset when selected item changed
+								$('#btnReset').click(function() {
+    								$(".js-example-data-array").val("");
+									
+									//reload to the page to reset
+    								location.reload(true);
+								});
+							
+							}
+							
+						});
+					});
+				</script><!--end JS-->
+
+
+				<h3>Please select a Restaurant:</h3>
+				<div class="js-example-data-array" style="width:60%"></div>
+
+				<div id="more"></div>
+				<p>
+					
+					<br>
+					<a data-role="button" data-rel="reset" style="width:20%" id="btnReset">Reset</a>
+					<a data-role="button"  data-rel="back" style="width:20%" href="#menu">Back</a>
+				</p>
+			</div><!--/content -->
+
+			<div data-role="footer" data-id="myfooter" data-position="fixed">
+				<div class="controls" data-role="controlgroup" data-type="horizontal">
+					<a href="#home" data-role="button" data-icon="home">Log Out</a>
+					<a href="#menu" data-role="button" data-icon="bars">Main Menu</a>
+					<a href="#search" data-role="button" data-icon="search">Search</a>
+				</div>
+			</div><!--/footer -->
+		</div><!--/page -->
+
+
+
+	</body>
+</html>
